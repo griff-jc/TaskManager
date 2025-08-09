@@ -31,9 +31,11 @@ namespace TaskManager.Controllers
                     return Problem(detail: "Failed to create task", statusCode: 500, title: "An error occurred while creating the task");
                 }
                 return Created($"api/task/{createdTask.Id}", createdTask);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return Problem(detail: ex.Message, statusCode: 500, title: "An error occurred while creating the task");
             }
+        }
     }
 }
