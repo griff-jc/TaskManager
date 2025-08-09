@@ -1,4 +1,4 @@
-import { Task } from "../Task";
+import { Task } from "../task";
 
 interface TaskCollectionResponseModel {
     tasks: Task[];
