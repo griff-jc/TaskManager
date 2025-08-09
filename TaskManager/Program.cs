@@ -52,7 +52,7 @@ namespace TaskManager
                 dbContext.Database.Migrate();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

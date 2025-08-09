@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TaskManagementService {
-  private readonly baseUrl = '/api/tasks';
+  private readonly baseUrl = '/api/task';
 
   constructor(private http: HttpClient) { }
 
