@@ -7,7 +7,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Task } from '../../models';
+import { Task, TaskQueryRequest } from '../../models';
+import { TaskManagementService } from '../../services/task-management-service';
 
 @Component({
   selector: 'app-task-table',
@@ -20,6 +21,18 @@ export class TaskTable {
   public dataSource = new MatTableDataSource<Task>();
   private router = inject(Router);
   private selectedRows = signal<number[]>([]);
+  private taskService = inject(TaskManagementService);
+
+  ngOnInit() {
+    this.taskService.getTasks(new TaskQueryRequest()).subscribe({
+      next: (response) => {
+        this.dataSource.data = response.tasks;
+      },
+      error: (error) => {
+        console.error('Error fetching tasks:', error);
+      }
+    });
+  }
 
   goToTaskDetails(taskId: number) {
     this.router.navigate(['/tasks', taskId]);
