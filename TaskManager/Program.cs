@@ -1,7 +1,5 @@
-
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-using System.Threading.Tasks;
 using TaskManager.Domain;
 using TaskManager.Domain.Interfaces;
 using TaskManager.Infrastructure;
@@ -31,7 +29,7 @@ namespace TaskManager
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            if(!builder.Environment.IsDevelopment())
+            if (!builder.Environment.IsDevelopment())
             {
                 builder.AddOpenTelemetry();
             }
@@ -64,6 +62,9 @@ namespace TaskManager
             app.Run();
         }
 
+        private static readonly string[] seedTitles = ["Write report", "Fix bug", "Design UI", "Plan sprint", "Review PR"];
+        private static readonly string[] seedDescriptions = ["Urgent", "Low priority", "Requires discussion", "Backend task", "Frontend task"];
+
         private static void SeedDatabase(DbContextOptionsBuilder options)
         {
             options.UseSeeding((context, _) =>
@@ -81,8 +82,8 @@ namespace TaskManager
                 {
 
                     var random = new Random();
-                    var titles = new[] { "Write report", "Fix bug", "Design UI", "Plan sprint", "Review PR" };
-                    var descriptions = new[] { "Urgent", "Low priority", "Requires discussion", "Backend task", "Frontend task" };
+                    var titles = seedTitles;
+                    var descriptions = seedDescriptions;
 
                     for (int i = seededTasks; i < 15; i++)
                     {

@@ -15,7 +15,7 @@ namespace TaskManager.Infrastructure
 
         public IPersistenceProvider CreateProvider(PersistenceProviders persistenceProvider)
         {
-           return persistenceProvider switch
+            return persistenceProvider switch
             {
                 PersistenceProviders.PostGreSQL => _serviceProvider.GetRequiredService<EFCorePersistenceProvider>(),
                 // Add other persistence providers here as needed

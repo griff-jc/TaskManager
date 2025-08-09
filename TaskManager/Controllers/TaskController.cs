@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskManager.Controllers.ControllerModels;
 using TaskManager.Domain.Interfaces;
 using TaskManager.Domain.Models.TaskModels;
@@ -124,4 +122,5 @@ namespace TaskManager.Controllers
                 return Problem(detail: ex.Message, statusCode: 500, title: "An error occurred while deleting the task");
             }
         }
+    }
 }
