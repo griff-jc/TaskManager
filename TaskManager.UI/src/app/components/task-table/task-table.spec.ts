@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskTable } from './task-table';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('TaskTable', () => {
   let component: TaskTable;
@@ -8,7 +10,11 @@ describe('TaskTable', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskTable]
+      imports: [TaskTable],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
 

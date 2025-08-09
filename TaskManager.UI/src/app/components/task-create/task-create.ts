@@ -49,7 +49,7 @@ export class TaskCreate {
       title: ['', [Validators.required, Validators.maxLength(100)]],
       description: [''],
       dueDate: [null],
-      assignedTo: [''],
+      assignedToId: [''],
       isCompleted: [false]
     });
   }
