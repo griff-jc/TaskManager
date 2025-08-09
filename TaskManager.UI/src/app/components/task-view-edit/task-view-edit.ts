@@ -14,7 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskManagementService } from '../../services/task-management-service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Task } from '../../models';
+import { Task, TaskUpdateRequest } from '../../models';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 enum ViewMode {
@@ -63,30 +63,95 @@ export class TaskViewEdit {
       title: ['', [Validators.required, Validators.maxLength(100)]],
       description: [''],
       dueDate: [null],
-      assignedTo: [''],
+      assignedToId: [null],
       isCompleted: [false]
     });
   }
 
   cancelEdit() {
-    throw new Error('Method not implemented.');
+    const currentTask = this.task();
+    if (currentTask) {
+      this.populateForm(currentTask);
+    }
+    this.currentMode.set(ViewMode.VIEW);
   }
+
   saveChanges() {
-    throw new Error('Method not implemented.');
+    if (this.taskForm.invalid) {
+      this.markFormGroupTouched();
+      return;
+    }
+
+    const currentTask = this.task();
+    if (!currentTask) {
+      this.error.set('No task data available');
+      return;
+    }
+
+    this.isLoading.set(true);
+    const updateTaskRequest = new TaskUpdateRequest(
+      currentTask.id,
+      this.taskForm.value.title,
+      this.taskForm.value.dueDate,
+      this.taskForm.value.isCompleted,
+      this.taskForm.value.description,
+      this.taskForm.value.assignedToId,
+    );
+    this.taskService.updateTask(updateTaskRequest).subscribe({
+      next: () => {
+        this.snackBar.open('Task updated successfully', 'Close', { duration: 3000 });
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.message);
+        this.isLoading.set(false);
+      }
+    });
   }
-  getErrorMessage(arg0: string) {
-    throw new Error('Method not implemented.');
+
+  getErrorMessage(controlName: string) {
+    const control = this.taskForm.get(controlName);
+    if (!control || !control.errors) return '';
+
+    if (control.errors['required']) return `${controlName} is required`;
+    if (control.errors['minlength']) return `${controlName} must be at least ${control.errors['minlength'].requiredLength} characters`;
+
+    return 'Invalid input';
   }
-  formatDate(arg0: any) {
-    throw new Error('Method not implemented.');
+
+  formatDate(dateString?: string) {
+    if (!dateString) return '';
+
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
   enableEditMode() {
-    throw new Error('Method not implemented.');
+    this.currentMode.set(ViewMode.EDIT);
+    this.populateForm(this.task());
   }
 
   goBack() {
-    throw new Error('Method not implemented.');
+    this.router.navigate(['/']);
   }
 
+  private populateForm(currentTask: Task) {
+    this.taskForm.patchValue({
+      taskId: currentTask.id,
+      title: currentTask.title,
+      description: currentTask.description,
+      isCompleted: currentTask.isCompleted,
+      dueDate: currentTask.dueDate ? new Date(currentTask.dueDate) : null,
+      assignedToId: currentTask.assignedToId
+    });
+  }
+
+  private markFormGroupTouched() {
+    Object.keys(this.taskForm.controls).forEach(key => {
+      this.taskForm.get(key)?.markAsTouched();
+    });
+  }
 }
