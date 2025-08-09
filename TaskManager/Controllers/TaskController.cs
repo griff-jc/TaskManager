@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Controllers.ControllerModels;
 using TaskManager.Domain.Interfaces;
@@ -76,6 +77,29 @@ namespace TaskManager.Controllers
             catch (Exception ex)
             {
                 return Problem(detail: ex.Message, statusCode: 500, title: "An error occurred while creating the task");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTask(int id, [FromBody] UpdateTaskRequest updateTaskModel)
+        {
+            if (id <= 0 || updateTaskModel == null)
+            {
+                return BadRequest("Invalid task ID or task model.");
+            }
+            try
+            {
+                updateTaskModel.Id = id;
+                var updatedTask = await _taskManagementService.UpdateTaskAsync(updateTaskModel);
+                if (updatedTask == null)
+                {
+                    return Problem(detail: "Failed to update task", statusCode: 500, title: "Update Task Failure");
+                }
+                return Created($"api/task/{updatedTask.Id}", updatedTask);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message, statusCode: 500, title: "An error occurred while updating the task");
             }
         }
     }

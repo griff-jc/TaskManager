@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using TaskManager.Domain.Interfaces;
 using TaskManager.Domain.Models.TaskModels;
 using TaskManager.Persistence.EFCore.DbModels;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TaskManager.Persistence.EFCore
 {
@@ -85,9 +84,32 @@ namespace TaskManager.Persistence.EFCore
             };
         }
 
-        public Task<TaskModel?> UpdateTaskAsync(UpdateTaskModel taskModel)
+        public async Task<TaskModel?> UpdateTaskAsync(UpdateTaskModel taskModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var task = await _dbContext.Tasks.AsQueryable().FirstAsync(t => t.Id == taskModel.Id);
+                task.Title = taskModel.Title;
+                task.Description = taskModel.Description;
+                task.IsCompleted = taskModel.IsCompleted;
+                task.DueDate = taskModel.DueDate;
+                task.AssignedToId = taskModel.AssignedToId;
+                var resultsChanged = await _dbContext.SaveChangesAsync();
+                if (resultsChanged > 0)
+                {
+                    return task;
+                }
+                else
+                {
+                    _logger.LogWarning("Failed to update task with ID {TaskId}", taskModel.Id);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred while updating task with ID {TaskId}", taskModel.Id);
+                return null;
+            }
         }
     }
 }

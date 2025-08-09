@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskManager.Domain.Interfaces;
+﻿using TaskManager.Domain.Interfaces;
 using TaskManager.Domain.Models;
 using TaskManager.Domain.Models.TaskModels;
 
@@ -29,15 +24,16 @@ namespace TaskManager.Domain
             throw new NotImplementedException();
         }
 
-        public Task<TaskCollectionModel> GetTasksAsync(TaskQuery query)
+        public async Task<TaskCollectionModel> GetTasksAsync(TaskQuery query)
         {
             var persistenceProvider = _persistenceProviderFactory.CreateProvider(PersistenceProviders.PostGreSQL);
-            return persistenceProvider.GetTasksAsync(query);
+            return await persistenceProvider.GetTasksAsync(query);
         }
 
-        public Task<TaskModel?> UpdateTaskAsync(UpdateTaskModel taskToUpdate)
+        public async Task<TaskModel?> UpdateTaskAsync(UpdateTaskModel taskToUpdate)
         {
-            throw new NotImplementedException();
+            var persistenceProvider = _persistenceProviderFactory.CreateProvider(PersistenceProviders.PostGreSQL);
+            return await persistenceProvider.UpdateTaskAsync(taskToUpdate);
         }
     }
 }
