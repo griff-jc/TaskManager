@@ -19,9 +19,10 @@ export class TaskTable {
   public displayedColumns: string[] = ['select', 'id', 'title', 'description', 'isCompleted', 'dueDate', 'createdById', 'assignedToId', 'actions'];
   public dataSource = new MatTableDataSource<Task>();
   private router = inject(Router);
+  private selectedRows = signal<number[]>([]);
 
-  goToTaskDetails(id: number) {
-    this.router.navigate(['/tasks', id]);
+  goToTaskDetails(taskId: number) {
+    this.router.navigate(['/tasks', taskId]);
   }
 
   formatDate(dateString: string): string {
@@ -33,15 +34,23 @@ export class TaskTable {
     });
   }
 
-  toggleTaskCompletion(arg0: any) {
+  toggleTaskCompletion(taskId: number) {
     throw new Error('Method not implemented.');
   }
-  toggleRowSelection(arg0: any) {
-    throw new Error('Method not implemented.');
+
+  toggleRowSelection(taskId: number) {
+    const selected = this.selectedRows();
+    if(selected.includes(taskId)) {
+      this.selectedRows.set(selected.filter(id => id !== taskId));
+    } else {
+      this.selectedRows.set([...selected, taskId]);
+    }
   }
-  isRowSelected(arg0: any) {
-    throw new Error('Method not implemented.');
+
+  isRowSelected(taskId: number): boolean {
+    return this.selectedRows().includes(taskId);
   }
+
   removeData() {
     throw new Error('Method not implemented.');
   }
