@@ -8,11 +8,13 @@
             {{ isEditMode() ? 'Edit Task' : 'Task Details' }}
         </h1>
         <div class="header-actions">
-            <button *ngIf="isViewMode()" mat-raised-button color="primary" (click)="enableEditMode()"
+            @if(isViewMode()){
+            <button mat-raised-button color="primary" (click)="enableEditMode()"
                 [disabled]="isLoading()">
                 <mat-icon>edit</mat-icon>
                 Edit
             </button>
+            }
         </div>
     </div>
 
