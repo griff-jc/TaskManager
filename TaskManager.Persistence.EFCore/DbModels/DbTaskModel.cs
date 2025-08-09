@@ -2,7 +2,7 @@
 
 namespace TaskManager.Persistence.EFCore.DbModels
 {
-    internal class DbTaskModel
+    internal class DbTaskModel : DbBaseModel
     {
         public int Id { get; set; }
         public required string Title { get; set; }
