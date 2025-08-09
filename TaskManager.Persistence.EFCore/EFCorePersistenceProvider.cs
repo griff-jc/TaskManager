@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TaskManager.Domain.Interfaces;
 using TaskManager.Domain.Models.TaskModels;
 using TaskManager.Persistence.EFCore.DbModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TaskManager.Persistence.EFCore
 {
@@ -45,9 +47,42 @@ namespace TaskManager.Persistence.EFCore
             throw new NotImplementedException();
         }
 
-        public Task<TaskCollectionModel> GetTasksAsync(TaskQuery taskQuery)
+        public async Task<TaskCollectionModel> GetTasksAsync(TaskQuery taskQuery)
         {
-            throw new NotImplementedException();
+            var dbQuery = _dbContext.Tasks.AsQueryable();
+            if (taskQuery.Id.HasValue)
+            {
+                dbQuery = dbQuery.Where(t => t.Id == taskQuery.Id.Value);
+            }
+            if (taskQuery.IsCompleted.HasValue)
+            {
+                dbQuery = dbQuery.Where(t => t.IsCompleted == taskQuery.IsCompleted.Value);
+            }
+            if (taskQuery.DueDateSearchRangeStart.HasValue)
+            {
+                dbQuery = dbQuery.Where(t => t.DueDate >= taskQuery.DueDateSearchRangeStart.Value);
+            }
+            if (taskQuery.DueDateSearchRangeEnd.HasValue)
+            {
+                dbQuery = dbQuery.Where(t => t.DueDate <= taskQuery.DueDateSearchRangeEnd.Value);
+            }
+            if (taskQuery.SortByTitle)
+            {
+                dbQuery = dbQuery.OrderBy(t => t.Title);
+            }
+            if (taskQuery.SortByDueDate)
+            {
+                dbQuery = dbQuery.OrderBy(t => t.DueDate);
+            }
+
+            return new TaskCollectionModel()
+            {
+                Tasks = await dbQuery
+                    .Skip(taskQuery.PageNumber * taskQuery.PageSize)
+                    .Take(taskQuery.PageSize)
+                    .Select(x => (TaskModel)x).ToListAsync(),
+                TotalCount = await _dbContext.Tasks.CountAsync(),
+            };
         }
 
         public Task<TaskModel?> UpdateTaskAsync(UpdateTaskModel taskModel)

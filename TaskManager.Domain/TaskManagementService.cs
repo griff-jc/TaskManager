@@ -31,7 +31,8 @@ namespace TaskManager.Domain
 
         public Task<TaskCollectionModel> GetTasksAsync(TaskQuery query)
         {
-            throw new NotImplementedException();
+            var persistenceProvider = _persistenceProviderFactory.CreateProvider(PersistenceProviders.PostGreSQL);
+            return persistenceProvider.GetTasksAsync(query);
         }
 
         public Task<TaskModel?> UpdateTaskAsync(UpdateTaskModel taskToUpdate)
