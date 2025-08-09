@@ -15,12 +15,19 @@ export class TaskCreateRequest implements TaskCreateRequestModel {
     createdById: number;
     assignedToId?: number;
 
-    constructor(data: TaskCreateRequestModel) {
-        this.title = data.title;
-        this.description = data.description;
-        this.isCompleted = data.isCompleted;
-        this.dueDate = data.dueDate;
-        this.createdById = data.createdById;
-        this.assignedToId = data.assignedToId;
+    constructor(
+    title: string,
+    createdById: number,
+    dueDate?: string,
+    isCompleted: boolean = false,
+    description?: string,
+    assignedToId?: number
+  ) {
+        this.title = title;
+        this.description = description;
+        this.isCompleted = isCompleted;
+        this.dueDate = dueDate;
+        this.createdById = createdById;
+        this.assignedToId = assignedToId;
     }
 }

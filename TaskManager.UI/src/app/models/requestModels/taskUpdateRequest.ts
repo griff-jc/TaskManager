@@ -15,12 +15,19 @@ export class TaskUpdateRequest implements TaskUpdateRequestModel {
     dueDate?: string;
     assignedToId?: number;
 
-    constructor(data: TaskUpdateRequestModel) {
-        this.id = data.id;
-        this.title = data.title;
-        this.description = data.description;
-        this.isCompleted = data.isCompleted;
-        this.dueDate = data.dueDate;
-        this.assignedToId = data.assignedToId;
+    constructor(
+    id: number,
+    title: string,
+    dueDate?: string,
+    isCompleted: boolean = false,
+    description?: string,
+    assignedToId?: number
+  ) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.isCompleted = isCompleted;
+        this.dueDate = dueDate;
+        this.assignedToId = assignedToId;
     }
 }
