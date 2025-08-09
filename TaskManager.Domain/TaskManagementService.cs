@@ -4,15 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManager.Domain.Interfaces;
+using TaskManager.Domain.Models;
 using TaskManager.Domain.Models.TaskModels;
 
 namespace TaskManager.Domain
 {
     public class TaskManagementService : ITaskManagementService
     {
-        public Task<TaskModel?> CreateTaskAsync(CreateTaskModel createTaskModel)
+        private readonly IPersistenceProviderFactory _persistenceProviderFactory;
+
+        public TaskManagementService(IPersistenceProviderFactory persistenceProviderFactory)
         {
-            throw new NotImplementedException();
+            _persistenceProviderFactory = persistenceProviderFactory;
+        }
+
+        public async Task<TaskModel?> CreateTaskAsync(CreateTaskModel createTaskModel)
+        {
+            var persistenceProvider = _persistenceProviderFactory.CreateProvider(PersistenceProviders.PostGreSQL);
+            return await persistenceProvider.CreateTaskAsync(createTaskModel);
         }
 
         public Task<bool> DeleteTaskAsync(int taskId)
