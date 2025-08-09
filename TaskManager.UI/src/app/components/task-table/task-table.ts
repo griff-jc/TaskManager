@@ -18,10 +18,10 @@ import { Router } from '@angular/router';
 export class TaskTable {
   public displayedColumns: string[] = ['select', 'id', 'title', 'description', 'isCompleted', 'dueDate', 'createdById', 'assignedToId', 'actions'];
   public dataSource = new MatTableDataSource<Task>();
-  private route = inject(Router);
+  private router = inject(Router);
 
   goToTaskDetails(id: number) {
-    this.route.navigate(['/tasks', id]);
+    this.router.navigate(['/tasks', id]);
   }
 
   formatDate(dateString: string): string {
@@ -46,7 +46,7 @@ export class TaskTable {
     throw new Error('Method not implemented.');
   }
   addData() {
-    throw new Error('Method not implemented.');
+    this.router.navigate(['/tasks/create'])
   }
 
 }
