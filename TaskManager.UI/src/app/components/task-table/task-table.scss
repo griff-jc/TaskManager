@@ -1,0 +1,153 @@
+.table-card {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.table-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.full-width-table {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  
+  .mat-column-select {
+    max-width: 60px;
+  }
+  
+  .mat-column-id {
+    max-width: 60px;
+  }
+  
+  .mat-column-title {
+    min-width: 150px;
+  }
+  
+  .mat-column-description {
+    min-width: 200px;
+    max-width: 250px;
+  }
+  
+  .mat-column-isCompleted {
+    max-width: 100px;
+  }
+  
+  .mat-column-dueDate {
+    min-width: 120px;
+  }
+  
+  .mat-column-createdById,
+  .mat-column-assignedToId {
+    max-width: 120px;
+  }
+}
+
+.selected-row {
+  background-color: rgba(63, 81, 181, 0.1) !important;
+}
+
+.status-chip {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  
+  &.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.description-text {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.due-date {
+  font-weight: 500;
+  color: #333;
+}
+
+.user-id {
+  font-style: italic;
+  color: #666;
+}
+
+mat-card-header {
+  margin-bottom: 16px;
+}
+
+mat-card-content {
+  padding-top: 0;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .table-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  // Hide some columns on mobile for better readability
+  .full-width-table {
+    .mat-column-description,
+    .mat-column-createdById,
+    .mat-column-assignedToId {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .full-width-table {
+    .mat-column-select {
+      display: none;
+    }
+  }
+}
