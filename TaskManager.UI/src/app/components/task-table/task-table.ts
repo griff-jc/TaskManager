@@ -59,7 +59,8 @@ export class TaskTable {
     this.router.navigate(['/tasks', taskId]);
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString?: string): string {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB', {
       year: 'numeric',
