@@ -13,6 +13,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { TaskManagementService } from '../../services/task-management-service';
+import { TaskCreateRequest } from '../../models';
 
 @Component({
   selector: 'app-task-create',
@@ -45,7 +46,7 @@ export class TaskCreate {
 
   constructor() {
     this.taskForm = this.fb.group({
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.maxLength(100)]],
       description: [''],
       dueDate: [null],
       assignedTo: [''],
@@ -53,7 +54,38 @@ export class TaskCreate {
     });
   }
 
-  createTask() { }
+  createTask() { 
+    if (this.taskForm.invalid) {
+      this.markFormGroupTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.error.set(null);
+    const formValue = this.taskForm.value;
+
+    const taskCreateRequest = new TaskCreateRequest(
+      formValue.title,
+      this.currentUserId, // Default user id
+      formValue.dueDate,
+      formValue.isCompleted,
+      formValue.description,
+      formValue.assignedTo,
+    );
+
+    this.taskService.createTask(taskCreateRequest).subscribe({
+      next: () => {
+        this.snackBar.open('Task created successfully', 'Close', { duration: 3000 });
+        this.isLoading.set(false);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.error.set(err.message);
+        this.snackBar.open('Failed to create task', 'Close', { duration: 3000 });
+        this.isLoading.set(false);
+      }
+    });
+  }
 
   cancel() {
     if (this.taskForm.dirty) {
@@ -94,5 +126,11 @@ export class TaskCreate {
     }
 
     return 'Invalid input';
+  }
+
+  private markFormGroupTouched() {
+    Object.keys(this.taskForm.controls).forEach(key => {
+      this.taskForm.get(key)?.markAsTouched();
+    });
   }
 }
