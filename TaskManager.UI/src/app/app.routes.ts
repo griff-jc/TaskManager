@@ -6,6 +6,6 @@ import { TaskCreate } from './components/task-create/task-create';
 
 export const routes: Routes = [
     { path: '', component: TaskTable },
-    { path: 'tasks/:id', resolve: { task: taskDetailResolver }, component: TaskViewEdit },
-    { path: 'tasks/create', component: TaskCreate }
+    { path: 'tasks/create', component: TaskCreate },
+    { path: 'tasks/:id', resolve: { task: taskDetailResolver }, component: TaskViewEdit }
 ];
