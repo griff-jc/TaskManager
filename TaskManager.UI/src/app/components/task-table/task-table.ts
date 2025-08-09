@@ -7,7 +7,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Task, TaskQueryRequest } from '../../models';
+import { Task, TaskQueryRequest, TaskUpdateRequest } from '../../models';
 import { TaskManagementService } from '../../services/task-management-service';
 
 @Component({
@@ -69,12 +69,32 @@ export class TaskTable {
   }
 
   toggleTaskCompletion(taskId: number) {
-    throw new Error('Method not implemented.');
+    const updatedData = this.dataSource.data.map(task => task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task);
+    this.dataSource.data = updatedData;
+
+    const updatedTask = this.dataSource.data.find(task => task.id === taskId);
+    if (updatedTask) {
+      let request = new TaskUpdateRequest(
+        updatedTask.id,
+        updatedTask.title,
+        updatedTask.dueDate,
+        updatedTask.isCompleted,
+        updatedTask.description,
+        updatedTask.assignedToId
+      );
+      this.taskService.updateTask(request).subscribe({
+        next: () => {
+        },
+        error: (error) => {
+          console.error('Error updating task:', error);
+        }
+      });
+    }
   }
 
   toggleRowSelection(taskId: number) {
     const selected = this.selectedRows();
-    if(selected.includes(taskId)) {
+    if (selected.includes(taskId)) {
       this.selectedRows.set(selected.filter(id => id !== taskId));
     } else {
       this.selectedRows.set([...selected, taskId]);
@@ -86,7 +106,14 @@ export class TaskTable {
   }
 
   removeData() {
-    throw new Error('Method not implemented.');
+    const selected = this.selectedRows();
+    if(selected.length === 0) return;
+    selected.forEach(taskId => {
+      this.taskService.deleteTask(taskId).subscribe(() => {
+        this.dataSource.data = this.dataSource.data.filter(task => task.id !== taskId);
+      });
+    });
+    this.selectedRows.set([]);
   }
   addData() {
     this.router.navigate(['/tasks/create'])
