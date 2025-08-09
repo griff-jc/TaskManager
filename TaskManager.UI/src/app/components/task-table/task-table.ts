@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Task } from '../../models/Task';
 import { Router } from '@angular/router';
+import { Task } from '../../models';
 
 @Component({
   selector: 'app-task-table',
