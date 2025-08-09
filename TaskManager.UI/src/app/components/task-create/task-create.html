@@ -1,1 +1,141 @@
-<p>task-create works!</p>
+<div class="task-create-container">
+    <!-- Header with navigation and actions -->
+    <div class="header-section">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1 class="page-title">Create New Task</h1>
+        <div class="header-actions">
+            <button mat-stroked-button (click)="resetForm()" [disabled]="isLoading()" class="reset-button">
+                <mat-icon>refresh</mat-icon>
+                Reset
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    @if(isLoading()){
+    <div class="loading-container">
+        <mat-icon class="spinning">refresh</mat-icon>
+        <p>Creating task...</p>
+    </div>
+    }
+
+    @if (error()) {
+    <div class="error-container">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-button (click)="error.set(null)">Dismiss</button>
+    </div>
+    }
+
+    @if (!isLoading()) {
+
+    <div class="content-container">
+        <!-- Help text -->
+        <div class="help-section">
+            <mat-card class="help-card">
+                <mat-card-content>
+                    <h3>
+                        <mat-icon>help</mat-icon>
+                        Creating a Task
+                    </h3>
+                    <ul>
+                        <li><strong>Title:</strong> A short, descriptive name for the task (required)</li>
+                        <li><strong>Description:</strong> Additional details about what needs to be done (optional)</li>
+                        <li><strong>Due Date:</strong> When the task should be completed (required)</li>
+                        <li><strong>Assigned To:</strong> Who should work on this task (optional)</li>
+                        <li><strong>Completed:</strong> Check this if the task is already finished</li>
+                    </ul>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <mat-card class="task-card create-mode">
+            <mat-card-header>
+                <div class="task-header">
+                    <h2>Task Details</h2>
+                    <p class="subtitle">Fill in the information below to create a new task</p>
+                </div>
+            </mat-card-header>
+
+            <mat-card-content>
+                <form [formGroup]="taskForm" class="task-form" (ngSubmit)="createTask()">
+                    <!-- Title field -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Title *</mat-label>
+                        <input matInput formControlName="title" placeholder="Enter task title" maxlength="100">
+                        <mat-hint>{{ taskForm.get('title')?.value?.length || 0 }}/100</mat-hint>
+                        @if(taskForm.get('title')?.touched && taskForm.get('title')?.invalid){
+                        <mat-error>
+                            {{ getErrorMessage('title') }}
+                        </mat-error>
+                        }
+                    </mat-form-field>
+
+                    <!-- Description field -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description" placeholder="Enter task description (optional)"
+                            rows="4" maxlength="500"></textarea>
+                        <mat-hint>{{ taskForm.get('description')?.value?.length || 0 }}/500</mat-hint>
+                    </mat-form-field>
+
+                    <!-- Due Date field -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Due Date *</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="dueDate">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                        <mat-hint>When should this task be completed?</mat-hint>
+                        @if(taskForm.get('dueDate')?.touched && taskForm.get('dueDate')?.invalid){
+                        <mat-error>
+                            {{ getErrorMessage('dueDate') }}
+                        </mat-error>
+                        }
+                    </mat-form-field>
+
+                    <!-- Assigned To field -->
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Assigned To</mat-label>
+                        <input matInput formControlName="assignedToId" placeholder="Enter user ID" type="number">
+                        <mat-hint>Who should work on this task?</mat-hint>
+                    </mat-form-field>
+
+                    <!-- Completion status -->
+                    <div class="checkbox-field">
+                        <mat-checkbox formControlName="isCompleted">
+                            Mark as completed immediately
+                        </mat-checkbox>
+                        <p class="checkbox-hint">Check this if the task is already done</p>
+                    </div>
+
+                    <!-- Form validation summary -->
+                    @if (taskForm.invalid && taskForm.touched) {
+                    <div class="validation-summary">
+                        <mat-icon color="warn">warning</mat-icon>
+                        <span>Please fix the errors above before creating the task.</span>
+                    </div>
+                    }
+                </form>
+            </mat-card-content>
+
+            <mat-card-actions class="card-actions">
+                <button mat-raised-button color="primary" (click)="createTask()"
+                    [disabled]="isLoading() || taskForm.invalid" class="create-button">
+                    <mat-icon>add</mat-icon>
+                    Create Task
+                </button>
+                <button mat-stroked-button (click)="cancel()" [disabled]="isLoading()" class="cancel-button">
+                    <mat-icon>cancel</mat-icon>
+                    Cancel
+                </button>
+                <button mat-stroked-button color="accent" (click)="resetForm()" [disabled]="isLoading()"
+                    class="reset-button">
+                    <mat-icon>refresh</mat-icon>
+                    Reset Form
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    }
+</div>
