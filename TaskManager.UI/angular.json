@@ -94,6 +94,17 @@
               "src/styles.scss"
             ]
           }
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "TaskManager.UI:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "TaskManager.UI:serve:production"
+            }
+          }
         }
       }
     }
