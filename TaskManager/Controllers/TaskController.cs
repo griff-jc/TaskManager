@@ -102,5 +102,26 @@ namespace TaskManager.Controllers
                 return Problem(detail: ex.Message, statusCode: 500, title: "An error occurred while updating the task");
             }
         }
-    }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Invalid task ID.");
+            }
+            try
+            {
+                var isDeleted = await _taskManagementService.DeleteTaskAsync(id);
+                if (!isDeleted)
+                {
+                    return NotFound($"Task with ID {id} not found or could not be deleted.");
+                }
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message, statusCode: 500, title: "An error occurred while deleting the task");
+            }
+        }
 }

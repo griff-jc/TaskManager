@@ -11,11 +11,6 @@ namespace TaskManager.Controllers.ControllerModels
         public DateTime DueDate { get; set; }
         public int? AssignedToId { get; set; }
 
-        public bool IsValid()
-        {
-            return true;
-        }
-
         public static implicit operator UpdateTaskModel(UpdateTaskRequest request)
         {
             return new UpdateTaskModel

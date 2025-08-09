@@ -41,9 +41,23 @@ namespace TaskManager.Persistence.EFCore
             }
         }
 
-        public Task<bool> DeleteTaskAsync(int taskId)
+        public async Task<bool> DeleteTaskAsync(int taskId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var recordsChanged = await _dbContext.Tasks.Where(t => t.Id == taskId).ExecuteDeleteAsync();
+                if (recordsChanged == 0)
+                {
+                    _logger.LogWarning("No task found with ID {TaskId} to delete", taskId);
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to delete task with ID {TaskId}", taskId);
+                return false;
+            }
         }
 
         public async Task<TaskCollectionModel> GetTasksAsync(TaskQuery taskQuery)

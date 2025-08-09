@@ -19,9 +19,10 @@ namespace TaskManager.Domain
             return await persistenceProvider.CreateTaskAsync(createTaskModel);
         }
 
-        public Task<bool> DeleteTaskAsync(int taskId)
+        public async Task<bool> DeleteTaskAsync(int taskId)
         {
-            throw new NotImplementedException();
+            var persistenceProvider = _persistenceProviderFactory.CreateProvider(PersistenceProviders.PostGreSQL);
+            return await persistenceProvider.DeleteTaskAsync(taskId);
         }
 
         public async Task<TaskCollectionModel> GetTasksAsync(TaskQuery query)
