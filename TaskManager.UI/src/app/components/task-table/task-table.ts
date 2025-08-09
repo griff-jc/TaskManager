@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,6 +7,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Task } from '../../models/Task';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-table',
@@ -17,13 +18,21 @@ import { Task } from '../../models/Task';
 export class TaskTable {
   public displayedColumns: string[] = ['select', 'id', 'title', 'description', 'isCompleted', 'dueDate', 'createdById', 'assignedToId', 'actions'];
   public dataSource = new MatTableDataSource<Task>();
-  
-  goToTaskDetails(arg0: any) {
-    throw new Error('Method not implemented.');
+  private route = inject(Router);
+
+  goToTaskDetails(id: number) {
+    this.route.navigate(['/tasks', id]);
   }
-  formatDate(arg0: any) {
-    throw new Error('Method not implemented.');
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   }
+
   toggleTaskCompletion(arg0: any) {
     throw new Error('Method not implemented.');
   }
