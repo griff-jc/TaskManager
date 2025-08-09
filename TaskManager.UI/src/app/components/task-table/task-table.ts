@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -19,18 +19,39 @@ import { TaskManagementService } from '../../services/task-management-service';
 export class TaskTable {
   public displayedColumns: string[] = ['select', 'id', 'title', 'description', 'isCompleted', 'dueDate', 'createdById', 'assignedToId', 'actions'];
   public dataSource = new MatTableDataSource<Task>();
+  public totalEntries = signal<number>(0);
   private router = inject(Router);
   private selectedRows = signal<number[]>([]);
   private taskService = inject(TaskManagementService);
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  constructor() {
+    this.paginator = new MatPaginator();
+  }
 
   ngOnInit() {
     this.taskService.getTasks(new TaskQueryRequest()).subscribe({
       next: (response) => {
         this.dataSource.data = response.tasks;
+        this.totalEntries.set(response.totalCount);
       },
       error: (error) => {
         console.error('Error fetching tasks:', error);
       }
+    });
+
+    this.paginator.page.subscribe((pageEvent) => {
+      this.taskService.getTasks(new TaskQueryRequest({
+        pageSize: pageEvent.pageSize,
+        pageNumber: pageEvent.pageIndex
+      })).subscribe({
+        next: (response) => {
+          this.dataSource.data = response.tasks;
+        },
+        error: (error) => {
+          console.error('Error fetching tasks:', error);
+        }
+      });
     });
   }
 
